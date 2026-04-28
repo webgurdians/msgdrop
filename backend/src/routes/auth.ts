@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwt123';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 router.post('/register', register);
 router.post('/login', login);
@@ -23,9 +24,9 @@ const mockOAuthHandler = (req: any, res: any) => {
   jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }, (err: any, token: string | undefined) => {
     if (err || !token) {
       console.error("JWT Error:", err);
-      return res.redirect(`http://localhost:5173/login?error=OAuthMockFailed`);
+      return res.redirect(`${FRONTEND_URL}/login?error=OAuthMockFailed`);
     }
-    res.redirect(`http://localhost:5173/dashboard?token=${token}&email=admin@msgdrop.com`);
+    res.redirect(`${FRONTEND_URL}/dashboard?token=${token}&email=admin@msgdrop.com`);
   });
 };
 
@@ -33,7 +34,7 @@ const mockOAuthHandler = (req: any, res: any) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login?error=OAuthFailed', session: false }),
+  passport.authenticate('google', { failureRedirect: `${FRONTEND_URL}/login?error=OAuthFailed`, session: false }),
   oauthCallback
 );
 

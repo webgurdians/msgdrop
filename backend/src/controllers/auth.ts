@@ -5,6 +5,7 @@ import { z } from 'zod';
 import prisma from '../lib/prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwt123';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -116,7 +117,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 export const oauthCallback = (req: Request, res: Response): void => {
   if (!req.user) {
-    res.redirect('http://localhost:5173/?error=OAuthFailed');
+    res.redirect(`${FRONTEND_URL}/?error=OAuthFailed`);
     return;
   }
 
@@ -130,12 +131,12 @@ export const oauthCallback = (req: Request, res: Response): void => {
 
   jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }, (err, token) => {
     if (err) {
-      res.redirect('http://localhost:5173/?error=TokenGenerationFailed');
+      res.redirect(`${FRONTEND_URL}/?error=TokenGenerationFailed`);
       return;
     }
     
     // Redirect to frontend with token and email as query parameters.
     // The frontend should catch these and save them to localStorage.
-    res.redirect(`http://localhost:5173/dashboard?token=${token}&email=${encodeURIComponent(user.email)}`);
+    res.redirect(`${FRONTEND_URL}/dashboard?token=${token}&email=${encodeURIComponent(user.email)}`);
   });
 };

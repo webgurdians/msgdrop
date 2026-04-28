@@ -23,7 +23,8 @@ export default function Login() {
       : { email, password, phone: phone || undefined };
 
     try {
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -176,7 +177,7 @@ export default function Login() {
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => window.location.href = 'http://localhost:3001/api/v1/auth/google'}
+                  onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/v1/auth/google`}
                   className="inline-flex w-full justify-center rounded-md border border-border bg-card py-2 px-4 text-sm font-medium text-foreground shadow-sm hover:bg-secondary focus:outline-none transition-all"
                 >
                   <span className="sr-only">Sign in with Google</span>
@@ -187,7 +188,7 @@ export default function Login() {
 
                 <button
                   type="button"
-                  onClick={() => window.location.href = 'http://localhost:3001/api/v1/auth/facebook'}
+                  onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/v1/auth/facebook`}
                   className="inline-flex w-full justify-center rounded-md border border-border bg-card py-2 px-4 text-sm font-medium text-foreground shadow-sm hover:bg-secondary focus:outline-none transition-all"
                 >
                   <span className="sr-only">Sign in with Meta</span>
