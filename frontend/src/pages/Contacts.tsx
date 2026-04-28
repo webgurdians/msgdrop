@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { G } from '../theme';
 import { Card, Btn, Avatar, Tag, Modal, Field, Input } from '../components/ui';
+import { useCRMData } from '../data/mock';
 
 export default function Contacts() {
   const navigate = useNavigate();
@@ -12,7 +13,15 @@ export default function Contacts() {
   const [isLoading, setIsLoading] = useState(true);
   const [form, setForm] = useState({ name: "", phone: "", type: "Salon", tag: "New" });
 
+  const isDemo = localStorage.getItem('demoMode') === 'true';
+  const { CONTACTS } = useCRMData();
+
   const fetchContacts = async () => {
+    if (isDemo) {
+      setContacts(CONTACTS);
+      setIsLoading(false);
+      return;
+    }
     try {
       const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
       const res = await fetch(`${baseUrl}/api/contacts`);
@@ -43,6 +52,14 @@ export default function Contacts() {
       color: [G.green, G.teal, G.amber, "#a78bfa", "#fb923c"][Math.floor(Math.random() * 5)],
     };
     
+    if (isDemo) {
+      newContact.id = contacts.length + 1;
+      setContacts(prev => [newContact, ...prev]);
+      setShowModal(false);
+      setForm({ name: "", phone: "", type: "Salon", tag: "New" });
+      return;
+    }
+
     try {
       const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
       const res = await fetch(`${baseUrl}/api/contacts`, {
@@ -61,6 +78,10 @@ export default function Contacts() {
   };
 
   const handleDelete = async (id: number) => {
+    if (isDemo) {
+      setContacts(prev => prev.filter(x => x.id !== id));
+      return;
+    }
     try {
       const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
       await fetch(`${baseUrl}/api/contacts/${id}`, { method: "DELETE" });

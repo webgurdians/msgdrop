@@ -12,7 +12,17 @@ export default function Dashboard() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const isDemo = localStorage.getItem('demoMode') === 'true';
+  const { CAMPAIGNS, stats: mockStats } = useCRMData();
+
   useEffect(() => {
+    if (isDemo) {
+      setCampaigns(CAMPAIGNS);
+      setContacts(Array(847).fill(0)); // just to make total contacts 847
+      setIsLoading(false);
+      return;
+    }
+
     const fetchData = async () => {
       try {
         const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
@@ -36,7 +46,7 @@ export default function Dashboard() {
 
   const recentCampaigns = campaigns.filter(c => c.status === "live").slice(0, 3);
   
-  const stats = {
+  const stats = isDemo ? mockStats : {
     totalContacts: contacts.length.toString(),
     messagesSent: campaigns.reduce((acc, c) => acc + (c.sent || 0), 0).toLocaleString(),
     campaignsLive: campaigns.filter(c => c.status === "live").length.toString(),

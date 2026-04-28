@@ -17,8 +17,17 @@ export default function AIConfig() {
   const [aiResponse, setAiResponse] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const isDemo = localStorage.getItem('demoMode') === 'true';
+
   useEffect(() => {
     const fetchConfig = async () => {
+      if (isDemo) {
+        setBusinessContext("The Glow Studio, Park Street, Kolkata. We are a high-end luxury salon specializing in Organic Facials and Balayage Hair Color. Our haircuts start at ₹800.");
+        setTone("Friendly");
+        setBusinessHours("Mon-Sat: 10 AM - 8 PM, Sunday: Closed");
+        setEnabled(true);
+        return;
+      }
       try {
         const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
         const res = await fetch(`${baseUrl}/api/config`);
@@ -36,6 +45,10 @@ export default function AIConfig() {
   }, [AI_REPLIES.length]);
 
   const saveConfig = async () => {
+    if (isDemo) {
+      alert("Config saved successfully! (Demo Mode)");
+      return;
+    }
     try {
       const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
       await fetch(`${baseUrl}/api/config`, {

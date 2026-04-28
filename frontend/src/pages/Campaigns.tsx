@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { G } from '../theme';
 import { Btn, StatusDot, Modal, Field, Input } from '../components/ui';
+import { useCRMData } from '../data/mock';
 
 export default function Campaigns() {
   const [selected, setSelected] = useState<any>(null);
@@ -13,7 +14,15 @@ export default function Campaigns() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const location = useLocation();
 
+  const isDemo = localStorage.getItem('demoMode') === 'true';
+  const { CAMPAIGNS } = useCRMData();
+
   const fetchCampaigns = async () => {
+    if (isDemo) {
+      setCampaigns(CAMPAIGNS);
+      setIsLoading(false);
+      return;
+    }
     try {
       const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
       const res = await fetch(`${baseUrl}/api/campaigns`);
@@ -44,12 +53,16 @@ export default function Campaigns() {
     const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
     
     if ((newCamp as any).id) {
-      await fetch(`${baseUrl}/api/campaigns/${(newCamp as any).id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCamp)
-      });
-      setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
+      if (isDemo) {
+        setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
+      } else {
+        await fetch(`${baseUrl}/api/campaigns/${(newCamp as any).id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCamp)
+        });
+        setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
+      }
     } else {
       const camp = {
         ...newCamp, status: "live",
@@ -57,13 +70,18 @@ export default function Campaigns() {
         color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],
         sent: 0, opened: 0, replied: 0, segment: "Custom segment",
       };
-      const res = await fetch(`${baseUrl}/api/campaigns`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(camp)
-      });
-      const saved = await res.json();
-      setCampaigns(prev => [saved, ...prev]);
+      if (isDemo) {
+        camp.id = campaigns.length + 1;
+        setCampaigns(prev => [camp, ...prev]);
+      } else {
+        const res = await fetch(`${baseUrl}/api/campaigns`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(camp)
+        });
+        const saved = await res.json();
+        setCampaigns(prev => [saved, ...prev]);
+      }
     }
     setShowNew(false);
     setNewCamp({ name: "", type: "Follow-up", template: "", trigger: "" });
@@ -171,6 +189,11 @@ export default function Campaigns() {
           <div style={{ display: "flex", gap: 8 }}>
             <Btn style={{ flex: 1, justifyContent: "center" }} onClick={async () => {
               const newStatus = selected.status === "live" ? "paused" : "live";
+              if (isDemo) {
+                setCampaigns(prev => prev.map(c => c.id === selected.id ? { ...c, status: newStatus } : c));
+                setSelected((prev: any) => ({ ...prev, status: newStatus }));
+                return;
+              }
               const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
               await fetch(`${baseUrl}/api/campaigns/${selected.id}`, {
                 method: "PUT",
@@ -186,6 +209,11 @@ export default function Campaigns() {
               setSelected(null);
             }}>✏️ Edit</Btn>
             <Btn variant="danger" onClick={async () => {
+              if (isDemo) {
+                setCampaigns(prev => prev.filter(c => c.id !== selected.id));
+                setSelected(null);
+                return;
+              }
               const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
               await fetch(`${baseUrl}/api/campaigns/${selected.id}`, { method: "DELETE" });
               setCampaigns(prev => prev.filter(c => c.id !== selected.id));

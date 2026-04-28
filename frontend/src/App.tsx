@@ -9,12 +9,18 @@ import Inbox from './pages/Inbox';
 import AIConfig from './pages/AIConfig';
 import Analytics from './pages/Analytics';
 
+function DemoSetup() {
+  localStorage.setItem('demoMode', 'true');
+  return <Navigate to="/dashboard" replace />;
+}
+
 export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/demo" element={<DemoSetup />} />
         
         {/* Dashboard Routes wrapped in Layout */}
         <Route path="/dashboard" element={<DashboardLayout />}>
