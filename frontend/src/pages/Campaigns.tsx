@@ -64,7 +64,7 @@ export default function Campaigns() {
         setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
       }
     } else {
-      const camp = {
+      const camp: any = {
         ...newCamp, status: "live",
         icon: ["💬", "🔔", "🔁", "🎉", "🎂"][Math.floor(Math.random() * 5)],
         color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],

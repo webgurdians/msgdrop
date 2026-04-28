@@ -46,7 +46,7 @@ export default function Contacts() {
 
   const addContact = async () => {
     if (!form.name || !form.phone) return;
-    const newContact = {
+    const newContact: any = {
       ...form, status: "new", lastVisit: "Today", visits: 0,
       avatar: form.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2),
       color: [G.green, G.teal, G.amber, "#a78bfa", "#fb923c"][Math.floor(Math.random() * 5)],
