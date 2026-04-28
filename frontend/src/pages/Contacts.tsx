@@ -47,7 +47,7 @@ export default function Contacts() {
 
   return (
     <div className="fade-up">
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, background: G.card, border: `1px solid ${G.border}`, borderRadius: 10, padding: "8px 14px" }}>
           <span style={{ color: G.muted }}>🔍</span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts…"
@@ -63,7 +63,7 @@ export default function Contacts() {
         <Btn onClick={() => setShowModal(true)}>＋ Add Contact</Btn>
       </div>
 
-      <Card style={{ padding: 0, overflow: "hidden" }}>
+      <Card style={{ padding: 0, overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${G.border}` }}>

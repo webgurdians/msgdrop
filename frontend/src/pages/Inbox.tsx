@@ -47,9 +47,9 @@ export default function Inbox() {
   };
 
   return (
-    <div className="fade-up" style={{ display: "flex", gap: 14, height: "calc(100vh - 160px)" }}>
+    <div className="fade-up" style={{ display: "flex", flexWrap: "wrap", gap: 14, minHeight: "calc(100vh - 160px)" }}>
       {/* Sidebar */}
-      <Card style={{ width: 260, padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      <Card style={{ flex: "1 1 300px", padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", maxHeight: "400px" }}>
         <div style={{ padding: "14px 14px 10px", borderBottom: `1px solid ${G.border}`, fontWeight: 700, fontSize: 13, fontFamily: "Syne,sans-serif" }}>
           📥 Inbox {inboxList.length > 0 && <span style={{ background: G.green + "22", color: G.green, fontSize: 10.5, fontWeight: 700, padding: "1px 7px", borderRadius: 20, marginLeft: 6 }}>2 new</span>}
         </div>
@@ -79,7 +79,7 @@ export default function Inbox() {
       </Card>
 
       {/* Chat area */}
-      <Card style={{ flex: 1, display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
+      <Card style={{ flex: "2 1 300px", display: "flex", flexDirection: "column", padding: 0, overflow: "hidden", minHeight: "500px" }}>
         {active ? (
           <>
             {/* Header */}

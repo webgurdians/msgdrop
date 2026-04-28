@@ -25,7 +25,7 @@ export default function AIConfig() {
 
   return (
     <div className="fade-up">
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 14 }}>
         <div>
           <Card style={{ marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>

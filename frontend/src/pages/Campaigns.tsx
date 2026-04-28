@@ -47,7 +47,7 @@ export default function Campaigns() {
         <Btn variant="ghost">📋 Templates</Btn>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 12 }}>
         {campaigns.length === 0 ? (
           <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 40, color: G.muted }}>No campaigns created yet. Click "New Campaign" to start.</div>
         ) : campaigns.map(c => (

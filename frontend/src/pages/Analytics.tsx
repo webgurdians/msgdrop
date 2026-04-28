@@ -25,14 +25,14 @@ export default function Analytics() {
 
   return (
     <div className="fade-up">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: 12, marginBottom: 20 }}>
         <StatCard label="Delivery Rate"  value={isDemoUser ? "98.2%" : "—"} trend="Industry avg: 94%"    color={G.green}  icon="📬" />
         <StatCard label="Open Rate"      value={isDemoUser ? "74%" : "—"}   trend="↑ WhatsApp avg"        color={G.teal}   icon="👁" />
         <StatCard label="Reply Rate"     value={isDemoUser ? "41%" : "—"}   trend="vs 2% email avg"       color={G.amber}  icon="↩️" />
         <StatCard label="Opt-out Rate"   value={isDemoUser ? "0.8%" : "—"}  trend="Very healthy"          color="#c084fc"  icon="🛑" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 14 }}>
         <Card>
           <div style={{ fontWeight: 700, fontFamily: "Syne,sans-serif", fontSize: 14, marginBottom: 18 }}>📈 Messages This Week</div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 140 }}>
