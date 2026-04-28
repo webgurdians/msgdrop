@@ -135,7 +135,7 @@ export default function DashboardLayout() {
       </div>
 
       {/* Main content */}
-      <div className="main-content" style={{ flex: 1, padding: "28px 30px", minHeight: "100vh" }}>
+      <div className="main-content" style={{ flex: 1, padding: "28px 30px", minHeight: "100vh", minWidth: 0, overflowX: "hidden" }}>
         <div className="fade-up" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <button className="hamburger" onClick={() => setSidebarOpen(true)} style={{ background: "transparent", border: "none", color: G.text, fontSize: 24, cursor: "pointer", padding: 4 }}>
