@@ -6,7 +6,7 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ background: "#FFFDF9", color: "#000", fontFamily: "'Inter', sans-serif", minHeight: "100vh", overflowX: 'hidden' }}>
+    <div style={{ background: "#FFFDF9", color: "#000", fontFamily: "'Inter', sans-serif", minHeight: "100vh" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Inter:wght@400;600;800&display=swap');
         
@@ -52,23 +52,26 @@ export default function Landing() {
         @media (max-width: 768px) {
           .section { padding: 60px 16px; }
           .hero-grid { grid-template-columns: 1fr !important; gap: 40px; text-align: center; }
-          .hero-h1 { font-size: 36px !important; word-break: break-word; line-height: 1.2 !important; }
+          .hero-h1 { font-size: 36px !important; word-break: break-word; line-height: 1.1 !important; }
+          .footer-h2 { font-size: 40px !important; word-break: break-word; line-height: 1.1 !important; }
           .hero-btns { justify-content: center; }
           .stepper-arrow { display: none; }
-          .hide-mobile { display: none !important; }
+          .nav-btns { gap: 10px !important; }
+          .nav-login { font-size: 14px !important; }
+          .nav-cta { padding: 8px 12px !important; font-size: 12px !important; }
         }
       `}</style>
 
       {/* Navbar */}
-      <nav style={{ padding: "20px 24px", borderBottom: "3px solid #000", background: "#fff", position: "sticky", top: 0, zIndex: 100 }}>
+      <nav style={{ padding: "16px 24px", borderBottom: "3px solid #000", background: "#fff", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => window.scrollTo(0,0)}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: "#25D366", border: "2px solid #000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, boxShadow: "2px 2px 0 #000" }}>💬</div>
-            <div className="font-display" style={{ fontSize: 26, fontWeight: 800 }}>MsgDrop</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => window.scrollTo(0,0)}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: "#25D366", border: "2px solid #000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "2px 2px 0 #000" }}>💬</div>
+            <div className="font-display" style={{ fontSize: 24, fontWeight: 800 }}>MsgDrop</div>
           </div>
-          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <button onClick={() => navigate('/login')} style={{ background: "none", border: "none", fontWeight: 800, fontSize: 16, cursor: "pointer", textDecoration: "underline" }} className="hide-mobile">Login</button>
-            <a href={WA_LINK} target="_blank" rel="noreferrer" className="nano-btn" style={{ padding: "10px 20px", fontSize: 14 }}>
+          <div className="nav-btns" style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            <button onClick={() => navigate('/login')} style={{ background: "none", border: "none", fontWeight: 800, fontSize: 16, cursor: "pointer", textDecoration: "underline" }} className="nav-login">Login</button>
+            <a href={WA_LINK} target="_blank" rel="noreferrer" className="nano-btn nav-cta" style={{ padding: "10px 20px", fontSize: 14 }}>
               Chat with us
             </a>
           </div>
@@ -207,7 +210,7 @@ export default function Landing() {
       {/* Final Closer */}
       <section style={{ background: "#25D366", padding: "100px 24px", textAlign: "center", borderBottom: "12px solid #000" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <h2 className="font-display" style={{ fontSize: 64, fontWeight: 800, marginBottom: 24, lineHeight: 1.1, color: "#000" }}>
+          <h2 className="font-display footer-h2" style={{ fontSize: 64, fontWeight: 800, marginBottom: 24, lineHeight: 1.1, color: "#000" }}>
             Ready to fill your appointment book?
           </h2>
           <p style={{ fontSize: 24, fontWeight: 600, marginBottom: 48, color: "#000" }}>
