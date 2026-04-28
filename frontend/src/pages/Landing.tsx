@@ -50,29 +50,32 @@ export default function Landing() {
         }
         
         @media (max-width: 768px) {
-          .section { padding: 60px 16px; }
+          .section { padding: 50px 16px; }
           .hero-grid { grid-template-columns: 1fr !important; gap: 40px; text-align: center; }
-          .hero-h1 { font-size: 36px !important; word-break: break-word; line-height: 1.1 !important; }
-          .footer-h2 { font-size: 40px !important; word-break: break-word; line-height: 1.1 !important; }
+          .hero-h1 { font-size: 32px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: normal !important; }
+          .footer-h2 { font-size: 32px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: normal !important; }
           .hero-btns { justify-content: center; }
           .stepper-arrow { display: none; }
-          .nav-btns { gap: 10px !important; }
-          .nav-login { font-size: 14px !important; }
-          .nav-cta { padding: 8px 12px !important; font-size: 12px !important; }
+          .nav-btns { gap: 8px !important; }
+          .nav-login { font-size: 13px !important; padding-right: 4px; }
+          .nav-cta { padding: 8px 12px !important; font-size: 12px !important; gap: 4px !important; }
+          .nav-container { padding: 12px 10px !important; }
+          .nav-logo-text { font-size: 20px !important; }
+          .hide-mobile { display: none !important; }
         }
       `}</style>
 
       {/* Navbar */}
-      <nav style={{ padding: "16px 24px", borderBottom: "3px solid #000", background: "#fff", position: "sticky", top: 0, zIndex: 100 }}>
+      <nav className="nav-container" style={{ padding: "16px 24px", borderBottom: "3px solid #000", background: "#fff", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => window.scrollTo(0,0)}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }} onClick={() => window.scrollTo(0,0)}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: "#25D366", border: "2px solid #000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "2px 2px 0 #000" }}>💬</div>
-            <div className="font-display" style={{ fontSize: 24, fontWeight: 800 }}>MsgDrop</div>
+            <div className="font-display nav-logo-text" style={{ fontSize: 24, fontWeight: 800 }}>MsgDrop</div>
           </div>
           <div className="nav-btns" style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <button onClick={() => navigate('/login')} style={{ background: "none", border: "none", fontWeight: 800, fontSize: 16, cursor: "pointer", textDecoration: "underline" }} className="nav-login">Login</button>
+            <button onClick={() => navigate('/login')} style={{ background: "none", border: "none", fontWeight: 800, fontSize: 16, cursor: "pointer", textDecoration: "underline", marginLeft: "auto" }} className="nav-login">Login</button>
             <a href={WA_LINK} target="_blank" rel="noreferrer" className="nano-btn nav-cta" style={{ padding: "10px 20px", fontSize: 14 }}>
-              Chat with us
+              Chat <span className="hide-mobile">with us</span>
             </a>
           </div>
         </div>
@@ -100,13 +103,30 @@ export default function Landing() {
           <div style={{ position: "relative" }}>
             <div className="phone-mockup">
               <div className="phone-notch" />
-              <div style={{ background: "#075E54", color: "#fff", padding: "30px 20px 15px", fontWeight: 600, fontSize: 18, borderBottom: "2px solid #000" }}>
-                WhatsApp
+              <div style={{ background: "#075E54", color: "#fff", padding: "30px 16px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "2px solid #000" }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#075E54", fontWeight: 800, flexShrink: 0 }}>M</div>
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ fontWeight: 600, fontSize: 16 }}>MsgDrop AI Bot</div>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>online</div>
+                </div>
               </div>
-              <div style={{ background: "#E5DDD5", height: "100%", padding: "1px" }}>
-                <div className="wa-chat-bubble">
-                  <strong>MsgDrop AI</strong><br/>
-                  Hi Rahul! It's time for your next haircut at <strong>The Style Lounge</strong>. Book your slot now! ✂️🔥
+              <div style={{ background: "#E5DDD5", height: "100%", padding: "16px", display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
+                <div style={{ alignSelf: "center", background: "rgba(0,0,0,0.1)", fontSize: 11, padding: "4px 10px", borderRadius: 10, color: "#444", marginBottom: 4 }}>Today</div>
+                
+                <div className="wa-chat-bubble" style={{ margin: 0, padding: "10px 14px" }}>
+                  Hi Rahul! It's been 4 weeks since your last haircut at <strong>The Style Lounge</strong>. ✂️<br/><br/>
+                  We have empty slots tomorrow. Book now & get 10% off!
+                  <div style={{ fontSize: 10, textAlign: "right", color: "#888", marginTop: 4 }}>10:42 AM</div>
+                </div>
+                
+                <div className="wa-chat-bubble" style={{ margin: 0, alignSelf: "flex-end", background: "#DCF8C6", borderRadius: "16px 16px 0 16px", width: "fit-content", padding: "10px 14px", border: "2px solid #000" }}>
+                  Yes! Book me for 2 PM.
+                  <div style={{ fontSize: 10, textAlign: "right", color: "#888", marginTop: 4 }}>10:45 AM <span style={{ color: "#34B7F1", fontWeight: "bold" }}>✓✓</span></div>
+                </div>
+                
+                <div className="wa-chat-bubble" style={{ margin: 0, padding: "10px 14px" }}>
+                  Done! Your appointment is confirmed for tomorrow at 2:00 PM. See you soon! 🎉
+                  <div style={{ fontSize: 10, textAlign: "right", color: "#888", marginTop: 4 }}>10:45 AM</div>
                 </div>
               </div>
             </div>
