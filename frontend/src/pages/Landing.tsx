@@ -10,6 +10,8 @@ export default function Landing() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Inter:wght@400;600;800&display=swap');
         
+        * { box-sizing: border-box; }
+        
         h1, h2, h3, .font-display { font-family: 'Syne', sans-serif; letter-spacing: -0.03em; }
         
         .nano-btn {
@@ -39,7 +41,7 @@ export default function Landing() {
 
         /* Mockup CSS */
         .phone-mockup {
-          border: 4px solid #000; border-radius: 40px; background: #fff; width: 320px; height: 600px;
+          border: 4px solid #000; border-radius: 40px; background: #fff; width: 100%; max-width: 320px; height: 600px;
           box-shadow: 12px 12px 0 rgba(0,0,0,0.1); position: relative; overflow: hidden; margin: 0 auto;
         }
         .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 24px; background: #000; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; z-index: 10; }
@@ -50,10 +52,11 @@ export default function Landing() {
         }
         
         @media (max-width: 768px) {
-          .section { padding: 50px 16px; }
+          .section { padding: 50px 16px; overflow: hidden; }
           .hero-grid { grid-template-columns: 1fr !important; gap: 40px; text-align: center; }
-          .hero-h1 { font-size: 32px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: normal !important; }
-          .footer-h2 { font-size: 32px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: normal !important; }
+          .hero-h1 { font-size: 28px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: anywhere !important; hyphens: auto; }
+          .hero-p { font-size: 16px !important; }
+          .footer-h2 { font-size: 28px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: anywhere !important; hyphens: auto; }
           .hero-btns { justify-content: center; }
           .stepper-arrow { display: none; }
           .nav-btns { gap: 8px !important; }
@@ -91,7 +94,7 @@ export default function Landing() {
               <span style={{ color: "#25D366", textShadow: "2px 2px 0 #000" }}>Bring Them Back</span><br/>
               Automatically.
             </h1>
-            <p style={{ fontSize: 20, lineHeight: 1.6, marginBottom: 40, fontWeight: 600, color: "#333" }}>
+            <p className="hero-p" style={{ fontSize: 20, lineHeight: 1.6, marginBottom: 40, fontWeight: 600, color: "#333" }}>
               The only AI WhatsApp tool built for West Bengal's Salons, Gyms, and Clinics to automate reminders and increase repeat bookings by 20%.
             </p>
             <div className="hero-btns" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
