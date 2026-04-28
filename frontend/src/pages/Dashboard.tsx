@@ -10,14 +10,14 @@ export default function Dashboard() {
   
   return (
     <div className="fade-up">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: 12, marginBottom: 20 }}>
         <StatCard label="Total Contacts"   value={stats.totalContacts}   trend={stats.totalContacts !== "0" ? "↑ 23 this week" : "—"}    color={G.green}  icon="👥" />
         <StatCard label="Messages Sent"    value={stats.messagesSent} trend={stats.messagesSent !== "0" ? "↑ 12% vs last week" : "—"} color={G.teal}   icon="💬" />
         <StatCard label="Campaigns Live"   value={stats.campaignsLive}     trend={stats.campaignsLive !== "0" ? "1 scheduled" : "—"}        color={G.amber}  icon="📣" />
         <StatCard label="Revenue Recovered" value={stats.revenueRecovered} trend={stats.revenueRecovered !== "₹0" ? "via win-back flows" : "—"} color="#c084fc"  icon="💰" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 14, marginBottom: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 14, marginBottom: 14 }}>
         {/* Active campaigns */}
         <Card>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -74,7 +74,7 @@ export default function Dashboard() {
           <div style={{ fontWeight: 700, fontFamily: "Syne, sans-serif", fontSize: 14 }}>📥 Recent Inbox</div>
           <Btn sm variant="ghost" onClick={() => navigate("/dashboard/inbox")}>Open inbox →</Btn>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))", gap: 10 }}>
           {INBOX.length === 0 ? (
             <div style={{ gridColumn: "1 / -1", padding: 20, textAlign: "center", color: G.muted, fontSize: 13 }}>Inbox is empty</div>
           ) : INBOX.slice(0, 3).map(m => (
