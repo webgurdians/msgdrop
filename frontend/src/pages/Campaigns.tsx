@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { G } from '../theme';
 import { Btn, StatusDot, Modal, Field, Input } from '../components/ui';
-import { useCRMData } from '../data/mock';
+import { useCRMData, addCampaignToStore, updateCampaignInStore, deleteCampaignFromStore } from '../data/mock';
 
 export default function Campaigns() {
   const [selected, setSelected] = useState<any>(null);
@@ -55,6 +55,7 @@ export default function Campaigns() {
     try {
       if ((newCamp as any).id) {
         if (isDemo) {
+          updateCampaignInStore((newCamp as any).id, newCamp);
           setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
         } else {
           await fetch(`${baseUrl}/api/campaigns/${(newCamp as any).id}`, {
@@ -72,7 +73,8 @@ export default function Campaigns() {
           sent: 0, opened: 0, replied: 0, segment: "Custom segment",
         };
         if (isDemo) {
-          camp.id = campaigns.length + 1;
+          camp.id = Date.now();
+          addCampaignToStore(camp);
           setCampaigns(prev => [camp, ...prev]);
         } else {
           const res = await fetch(`${baseUrl}/api/campaigns`, {
@@ -198,6 +200,7 @@ export default function Campaigns() {
             <Btn style={{ flex: 1, justifyContent: "center" }} onClick={async () => {
               const newStatus = selected.status === "live" ? "paused" : "live";
               if (isDemo) {
+                updateCampaignInStore(selected.id, { status: newStatus });
                 setCampaigns(prev => prev.map(c => c.id === selected.id ? { ...c, status: newStatus } : c));
                 setSelected((prev: any) => ({ ...prev, status: newStatus }));
                 return;
@@ -218,6 +221,7 @@ export default function Campaigns() {
             }}>✏️ Edit</Btn>
             <Btn variant="danger" onClick={async () => {
               if (isDemo) {
+                deleteCampaignFromStore(selected.id);
                 setCampaigns(prev => prev.filter(c => c.id !== selected.id));
                 setSelected(null);
                 return;

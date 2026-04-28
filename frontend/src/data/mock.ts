@@ -68,24 +68,34 @@ const MOCK_AI_REPLIES = [
 
 export const DEMO_USER_EMAIL = "admin@msgdrop.com";
 
-let userContacts: any[] = [];
-let userCampaigns: any[] = [];
+let userContacts: any[] = JSON.parse(localStorage.getItem('demo_userContacts') || '[]');
+let userCampaigns: any[] = JSON.parse(localStorage.getItem('demo_userCampaigns') || '[]');
 let userFaqs: any[] = [];
 const EMPTY_ARRAY: any[] = [];
 
 // Export functions to add items globally
-export const addContactToStore = (contact: any) => userContacts.push(contact);
-export const addCampaignToStore = (campaign: any) => userCampaigns.push(campaign);
+export const addContactToStore = (contact: any) => {
+  userContacts = [contact, ...userContacts];
+  localStorage.setItem('demo_userContacts', JSON.stringify(userContacts));
+};
+
+export const addCampaignToStore = (campaign: any) => {
+  userCampaigns = [campaign, ...userCampaigns];
+  localStorage.setItem('demo_userCampaigns', JSON.stringify(userCampaigns));
+};
+
 export const addFaqToStore = (faq: any) => userFaqs.push(faq);
 
 export const deleteContactFromStore = (id: number) => {
   MOCK_CONTACTS = MOCK_CONTACTS.filter(c => c.id !== id);
   userContacts = userContacts.filter(c => c.id !== id);
+  localStorage.setItem('demo_userContacts', JSON.stringify(userContacts));
 };
 
 export const deleteCampaignFromStore = (id: number) => {
   MOCK_CAMPAIGNS = MOCK_CAMPAIGNS.filter(c => c.id !== id);
   userCampaigns = userCampaigns.filter(c => c.id !== id);
+  localStorage.setItem('demo_userCampaigns', JSON.stringify(userCampaigns));
 };
 
 export const updateCampaignInStore = (id: number, data: any) => {
@@ -93,7 +103,10 @@ export const updateCampaignInStore = (id: number, data: any) => {
   if (mIdx !== -1) MOCK_CAMPAIGNS[mIdx] = { ...MOCK_CAMPAIGNS[mIdx], ...data };
   
   const uIdx = userCampaigns.findIndex(c => c.id === id);
-  if (uIdx !== -1) userCampaigns[uIdx] = { ...userCampaigns[uIdx], ...data };
+  if (uIdx !== -1) {
+    userCampaigns[uIdx] = { ...userCampaigns[uIdx], ...data };
+    localStorage.setItem('demo_userCampaigns', JSON.stringify(userCampaigns));
+  }
 };
 
 export function useCRMData() {

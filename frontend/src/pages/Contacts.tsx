@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { G } from '../theme';
 import { Card, Btn, Avatar, Tag, Modal, Field, Input } from '../components/ui';
-import { useCRMData } from '../data/mock';
+import { useCRMData, addContactToStore, deleteContactFromStore } from '../data/mock';
 
 export default function Contacts() {
   const navigate = useNavigate();
@@ -53,7 +53,8 @@ export default function Contacts() {
     };
     
     if (isDemo) {
-      newContact.id = contacts.length + 1;
+      newContact.id = Date.now();
+      addContactToStore(newContact);
       setContacts(prev => [newContact, ...prev]);
       setShowModal(false);
       setForm({ name: "", phone: "", type: "Salon", tag: "New" });
@@ -83,6 +84,7 @@ export default function Contacts() {
 
   const handleDelete = async (id: number) => {
     if (isDemo) {
+      deleteContactFromStore(id);
       setContacts(prev => prev.filter(x => x.id !== id));
       return;
     }
