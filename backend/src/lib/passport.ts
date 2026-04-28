@@ -11,10 +11,12 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'dummy-google-c
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID || 'dummy-facebook-app-id';
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET || 'dummy-facebook-app-secret';
 
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001';
+
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/v1/auth/google/callback"
+    callbackURL: `${BACKEND_URL}/api/v1/auth/google/callback`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -48,7 +50,7 @@ passport.use(new GoogleStrategy({
 passport.use(new FacebookStrategy({
     clientID: FACEBOOK_APP_ID,
     clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: "/api/v1/auth/facebook/callback",
+    callbackURL: `${BACKEND_URL}/api/v1/auth/facebook/callback`,
     profileFields: ['id', 'emails', 'name']
   },
   async (accessToken, refreshToken, profile, done) => {
