@@ -39,7 +39,7 @@ export default function Contacts() {
   }, []);
 
   const filtered = contacts.filter(c => {
-    const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.phone.includes(search);
+    const matchSearch = c.name?.toLowerCase().includes(search.toLowerCase()) || c.phone?.includes(search);
     const matchFilter = filter === "all" || c.status === filter;
     return matchSearch && matchFilter;
   });
@@ -68,9 +68,13 @@ export default function Contacts() {
         body: JSON.stringify(newContact)
       });
       const saved = await res.json();
+      if (!res.ok) {
+        throw new Error(saved.error || "Failed to save to database");
+      }
       setContacts(prev => [saved, ...prev]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to add contact", err);
+      alert(`Error saving contact: ${err.message}. Did you run the schema.sql in Supabase?`);
     }
     
     setShowModal(false);

@@ -80,8 +80,14 @@ export default function Campaigns() {
           body: JSON.stringify(camp)
         });
         const saved = await res.json();
+        if (!res.ok) {
+          throw new Error(saved.error || "Failed to save campaign");
+        }
         setCampaigns(prev => [saved, ...prev]);
       }
+    } catch (err: any) {
+      console.error("Failed to add campaign", err);
+      alert(`Error saving campaign: ${err.message}. Did you run the schema.sql in Supabase?`);
     }
     setShowNew(false);
     setNewCamp({ name: "", type: "Follow-up", template: "", trigger: "" });

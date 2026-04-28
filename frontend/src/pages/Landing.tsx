@@ -76,7 +76,7 @@ export default function Landing() {
             <div className="font-display nav-logo-text" style={{ fontSize: 24, fontWeight: 800 }}>MsgDrop</div>
           </div>
           <div className="nav-btns" style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <button onClick={() => navigate('/demo')} style={{ background: "none", border: "none", fontWeight: 800, fontSize: 16, cursor: "pointer", textDecoration: "underline", marginLeft: "auto" }} className="nav-login">Demo Login</button>
+            <button onClick={() => navigate('/login')} style={{ background: "none", border: "none", fontWeight: 800, fontSize: 16, cursor: "pointer", textDecoration: "underline", marginLeft: "auto" }} className="nav-login">Login</button>
             <a href={WA_LINK} target="_blank" rel="noreferrer" className="nano-btn nav-cta" style={{ padding: "10px 20px", fontSize: 14 }}>
               Chat <span className="hide-mobile">with us</span>
             </a>
