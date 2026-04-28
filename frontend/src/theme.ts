@@ -1,0 +1,17 @@
+export const G = {
+  bg: "#07100a",
+  surface: "#0d1a10",
+  card: "#111f15",
+  cardHover: "#142219",
+  border: "#1c3022",
+  borderHi: "#2a4a32",
+  green: "#22c55e",
+  greenDark: "#16a34a",
+  greenGlow: "rgba(34,197,94,0.13)",
+  teal: "#2dd4bf",
+  amber: "#fbbf24",
+  red: "#f87171",
+  text: "#e2f0e6",
+  muted: "#5a8066",
+  subtle: "#3a5c46",
+};
