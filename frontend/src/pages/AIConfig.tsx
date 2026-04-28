@@ -43,12 +43,16 @@ export default function AIConfig() {
           userQuery: queryToUse
         })
       });
-      if (!res.ok) throw new Error("HTTP Error " + res.status);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`HTTP ${res.status}: ${text}`);
+      }
       const data = await res.json();
       if (data.response) setAiResponse(data.response);
-      else setAiResponse("⚠️ Failed to generate response.");
-    } catch (err) {
-      setAiResponse("⚠️ Error connecting to AI server. Please check your backend.");
+      else setAiResponse("⚠️ Failed to generate response (no data).");
+    } catch (err: any) {
+      const url = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      setAiResponse(`⚠️ Error: ${err.message} | URL: ${url}/api/generate-ai-response`);
     } finally {
       setIsGenerating(false);
     }
