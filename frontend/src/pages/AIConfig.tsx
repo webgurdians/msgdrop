@@ -10,6 +10,11 @@ export default function AIConfig() {
   const [faqs, setFaqs] = useState(AI_REPLIES);
   const [newQ, setNewQ] = useState("");
   const [newA, setNewA] = useState("");
+  
+  const [businessContext, setBusinessContext] = useState("");
+  const [testQuery, setTestQuery] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     setFaqs(AI_REPLIES);
@@ -21,6 +26,30 @@ export default function AIConfig() {
     setFaqs(p => [...p, faq]);
     addFaqToStore(faq);
     setNewQ(""); setNewA("");
+  };
+
+  const handleGenerateTest = async () => {
+    if (!testQuery) return;
+    setIsGenerating(true);
+    setAiResponse("");
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/generate-ai-response`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessContext: businessContext || "We are a local business.",
+          tone: tone,
+          userQuery: testQuery
+        })
+      });
+      const data = await res.json();
+      if (data.response) setAiResponse(data.response);
+      else setAiResponse("⚠️ Failed to generate response.");
+    } catch (err) {
+      setAiResponse("⚠️ Error connecting to AI server.");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -53,12 +82,29 @@ export default function AIConfig() {
               </div>
             </Field>
             <Field label="Business Context">
-              <Input multiline placeholder="e.g. We are a premium salon in Park Street, Kolkata. We offer haircuts, facials, and more. Our prices start at ₹150." rows={3} />
+              <Input multiline value={businessContext} onChange={(e: any) => setBusinessContext(e.target.value)} placeholder="e.g. We are a premium salon in Park Street, Kolkata. We offer haircuts, facials, and more. Our prices start at ₹150." rows={3} />
             </Field>
             <Field label="Business Hours">
               <Input placeholder="e.g. Mon-Sat 10AM-8PM, Sun 11AM-6PM" />
             </Field>
             <Btn style={{ width: "100%", justifyContent: "center", marginTop: 4 }}>💾 Save Config</Btn>
+            
+            <div style={{ marginTop: 24, borderTop: `1px solid ${G.border}`, paddingTop: 24 }}>
+              <div style={{ fontWeight: 700, fontFamily: "Syne,sans-serif", fontSize: 14, marginBottom: 12 }}>🧪 Test Auto-Reply</div>
+              <Field label="Customer Message">
+                <Input value={testQuery} onChange={(e: any) => setTestQuery(e.target.value)} placeholder="e.g. Do you have any slots available today?" />
+              </Field>
+              <Btn style={{ width: "100%", justifyContent: "center", background: isGenerating ? G.muted : G.green }} onClick={handleGenerateTest} disabled={isGenerating}>
+                {isGenerating ? "⏳ Thinking..." : "✨ Generate Response"}
+              </Btn>
+              
+              {aiResponse && (
+                <div style={{ marginTop: 16, background: G.green + "1a", border: `1px solid ${G.green}44`, borderRadius: 10, padding: 14 }}>
+                  <div style={{ fontSize: 11, color: G.green, fontWeight: 700, textTransform: "uppercase", marginBottom: 6 }}>AI Response</div>
+                  <div style={{ fontSize: 13, color: G.text, lineHeight: 1.5 }}>{aiResponse}</div>
+                </div>
+              )}
+            </div>
           </Card>
         </div>
 

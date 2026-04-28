@@ -9,6 +9,7 @@ export default function Campaigns() {
   const [selected, setSelected] = useState<any>(null);
   const [showNew, setShowNew] = useState(false);
   const [newCamp, setNewCamp] = useState({ name: "", type: "Follow-up", template: "", trigger: "" });
+  const [isGenerating, setIsGenerating] = useState(false);
   
   const [campaigns, setCampaigns] = useState(CAMPAIGNS);
   const location = useLocation();
@@ -43,6 +44,31 @@ export default function Campaigns() {
     }
     setShowNew(false);
     setNewCamp({ name: "", type: "Follow-up", template: "", trigger: "" });
+  };
+
+  const handleGenerateTemplate = async () => {
+    setIsGenerating(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/generate-ai-response`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessContext: "We are a local business using WhatsApp.",
+          tone: "Friendly, direct, and professional",
+          userQuery: `Write a short, high-converting WhatsApp message template for a '${newCamp.type}' campaign. Include placeholder variables exactly like {name} and {link}. Keep it under 2 sentences and do not include any conversational filler.`
+        })
+      });
+      const data = await res.json();
+      if (data.response) {
+        setNewCamp(p => ({ ...p, template: data.response }));
+      } else {
+        alert("Failed to generate template.");
+      }
+    } catch (err) {
+      alert("Error generating template.");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -146,7 +172,19 @@ export default function Campaigns() {
           </Field>
           <Field label="Trigger / Schedule"><Input value={newCamp.trigger} onChange={(e: any) => setNewCamp(p => ({ ...p, trigger: e.target.value }))} placeholder="e.g. 2 hrs after appointment" /></Field>
           <Field label="Message Template">
-            <Input multiline value={newCamp.template} onChange={(e: any) => setNewCamp(p => ({ ...p, template: e.target.value }))} placeholder="Hi {name}, thanks for visiting! Use {link} for dynamic links." rows={4} />
+            <div style={{ position: "relative" }}>
+              <Input multiline value={newCamp.template} onChange={(e: any) => setNewCamp(p => ({ ...p, template: e.target.value }))} placeholder="Hi {name}, thanks for visiting! Use {link} for dynamic links." rows={4} />
+              <button 
+                onClick={handleGenerateTemplate}
+                disabled={isGenerating}
+                style={{ 
+                  position: "absolute", bottom: 8, right: 8, background: "#fff", border: `1px solid ${G.border}`, 
+                  borderRadius: 6, padding: "4px 8px", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", gap: 4,
+                  boxShadow: "2px 2px 0 rgba(0,0,0,0.1)", color: isGenerating ? G.muted : G.text
+                }}>
+                {isGenerating ? "⏳ Generating..." : "✨ Auto-Generate AI"}
+              </button>
+            </div>
           </Field>
           <div style={{ fontSize: 11.5, color: G.muted, marginBottom: 14 }}>💡 Variables: {"{name}"} {"{link}"} {"{date}"} {"{time}"}</div>
           <div style={{ display: "flex", gap: 8 }}>

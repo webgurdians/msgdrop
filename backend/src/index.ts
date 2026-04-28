@@ -11,15 +11,22 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: ['https://msgdrop.vercel.app', 'http://localhost:5173'],
+  credentials: true
+}));
 app.use(express.json());
 
 import passport from 'passport';
 import './lib/passport';
 app.use(passport.initialize());
 
+import authRoutes from './routes/auth';
+import aiRoutes from './routes/ai';
+
 // Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api', aiRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
