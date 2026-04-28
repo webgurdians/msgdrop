@@ -54,9 +54,9 @@ export default function Landing() {
         @media (max-width: 768px) {
           .section { padding: 50px 16px; overflow: hidden; }
           .hero-grid { grid-template-columns: 1fr !important; gap: 40px; text-align: center; }
-          .hero-h1 { font-size: 28px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: anywhere !important; hyphens: auto; }
+          .hero-h1 { font-size: 28px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: normal !important; }
           .hero-p { font-size: 16px !important; }
-          .footer-h2 { font-size: 28px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: anywhere !important; hyphens: auto; }
+          .footer-h2 { font-size: 28px !important; line-height: 1.1 !important; word-break: normal !important; overflow-wrap: normal !important; }
           .hero-btns { justify-content: center; }
           .stepper-arrow { display: none; }
           .nav-btns { gap: 8px !important; }
@@ -109,7 +109,7 @@ export default function Landing() {
               <div style={{ background: "#075E54", color: "#fff", padding: "30px 16px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "2px solid #000" }}>
                 <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#075E54", fontWeight: 800, flexShrink: 0 }}>M</div>
                 <div style={{ textAlign: "left" }}>
-                  <div style={{ fontWeight: 600, fontSize: 16 }}>MsgDrop AI Bot</div>
+                  <div style={{ fontWeight: 600, fontSize: 16 }}>MsgDrop AI</div>
                   <div style={{ fontSize: 12, opacity: 0.8 }}>online</div>
                 </div>
               </div>
