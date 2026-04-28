@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { G } from '../theme';
 import { Card, Btn, Avatar, Tag, Modal, Field, Input } from '../components/ui';
-import { useCRMData, addContactToStore } from '../data/mock';
+import { useCRMData, addContactToStore, deleteContactFromStore } from '../data/mock';
 
 export default function Contacts() {
   const navigate = useNavigate();
@@ -94,6 +94,7 @@ export default function Contacts() {
                   <div style={{ display: "flex", gap: 6 }}>
                     <Btn sm variant="teal" onClick={() => navigate("/dashboard/inbox", { state: { contactId: c.id } })}>💬 Message</Btn>
                     {c.status === "lapsed" && <Btn sm variant="ghost" onClick={() => navigate("/dashboard/campaigns")}>🔁 Win-Back</Btn>}
+                    <Btn sm variant="danger" onClick={() => { deleteContactFromStore(c.id); setContacts(prev => prev.filter(x => x.id !== c.id)); }}>🗑️</Btn>
                   </div>
                 </td>
               </tr>

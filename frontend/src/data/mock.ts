@@ -1,6 +1,6 @@
 import { G } from '../theme';
 
-const MOCK_CONTACTS = [
+let MOCK_CONTACTS = [
   { id: 1, name: "Priya Sharma",    phone: "+91 98300 11234", type: "Salon",        status: "active",   lastVisit: "3 days ago",  visits: 12, tag: "VIP",        avatar: "PS", color: "#a78bfa" },
   { id: 2, name: "Rohit Das",       phone: "+91 70443 88901", type: "Gym",          status: "lapsed",   lastVisit: "42 days ago", visits: 5,  tag: "At Risk",    avatar: "RD", color: "#fb923c" },
   { id: 3, name: "Sneha Mukherjee", phone: "+91 90461 05790", type: "Dental",       status: "active",   lastVisit: "1 week ago",  visits: 8,  tag: "Regular",    avatar: "SM", color: G.green },
@@ -11,7 +11,7 @@ const MOCK_CONTACTS = [
   { id: 8, name: "Suman Pal",       phone: "+91 91630 55432", type: "Gym",          status: "new",      lastVisit: "Yesterday",   visits: 2,  tag: "New",        avatar: "SP", color: G.teal },
 ];
 
-const MOCK_CAMPAIGNS = [
+let MOCK_CAMPAIGNS = [
   {
     id: 1, name: "Post-Visit Thank You", type: "Follow-up", icon: "💬",
     color: G.green, status: "live", sent: 248, opened: 191, replied: 44,
@@ -77,6 +77,24 @@ const EMPTY_ARRAY: any[] = [];
 export const addContactToStore = (contact: any) => userContacts.push(contact);
 export const addCampaignToStore = (campaign: any) => userCampaigns.push(campaign);
 export const addFaqToStore = (faq: any) => userFaqs.push(faq);
+
+export const deleteContactFromStore = (id: number) => {
+  MOCK_CONTACTS = MOCK_CONTACTS.filter(c => c.id !== id);
+  userContacts = userContacts.filter(c => c.id !== id);
+};
+
+export const deleteCampaignFromStore = (id: number) => {
+  MOCK_CAMPAIGNS = MOCK_CAMPAIGNS.filter(c => c.id !== id);
+  userCampaigns = userCampaigns.filter(c => c.id !== id);
+};
+
+export const updateCampaignInStore = (id: number, data: any) => {
+  const mIdx = MOCK_CAMPAIGNS.findIndex(c => c.id === id);
+  if (mIdx !== -1) MOCK_CAMPAIGNS[mIdx] = { ...MOCK_CAMPAIGNS[mIdx], ...data };
+  
+  const uIdx = userCampaigns.findIndex(c => c.id === id);
+  if (uIdx !== -1) userCampaigns[uIdx] = { ...userCampaigns[uIdx], ...data };
+};
 
 export function useCRMData() {
   const userEmail = localStorage.getItem('userEmail');

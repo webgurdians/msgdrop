@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { G } from '../theme';
 import { Btn, StatusDot, Modal, Field, Input } from '../components/ui';
-import { useCRMData, addCampaignToStore } from '../data/mock';
+import { useCRMData, addCampaignToStore, deleteCampaignFromStore, updateCampaignInStore } from '../data/mock';
 
 export default function Campaigns() {
   const { CAMPAIGNS } = useCRMData();
@@ -28,14 +28,19 @@ export default function Campaigns() {
       alert("Please enter a campaign name.");
       return;
     }
-    const camp = {
-      ...newCamp, id: campaigns.length + 1, status: "live",
-      icon: ["💬", "🔔", "🔁", "🎉", "🎂"][Math.floor(Math.random() * 5)],
-      color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],
-      sent: 0, opened: 0, replied: 0, segment: "Custom segment",
-    };
-    setCampaigns(prev => [...prev, camp]);
-    addCampaignToStore(camp);
+    if ((newCamp as any).id) {
+      updateCampaignInStore((newCamp as any).id, newCamp);
+      setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
+    } else {
+      const camp = {
+        ...newCamp, id: campaigns.length + 1, status: "live",
+        icon: ["💬", "🔔", "🔁", "🎉", "🎂"][Math.floor(Math.random() * 5)],
+        color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],
+        sent: 0, opened: 0, replied: 0, segment: "Custom segment",
+      };
+      setCampaigns(prev => [...prev, camp]);
+      addCampaignToStore(camp);
+    }
     setShowNew(false);
     setNewCamp({ name: "", type: "Follow-up", template: "", trigger: "" });
   };
@@ -111,9 +116,22 @@ export default function Campaigns() {
             </div>
           )}
           <div style={{ display: "flex", gap: 8 }}>
-            <Btn style={{ flex: 1, justifyContent: "center" }}>{selected.status === "live" ? "⏸ Pause" : "▶ Activate"}</Btn>
-            <Btn variant="ghost">✏️ Edit</Btn>
-            <Btn variant="danger">🗑</Btn>
+            <Btn style={{ flex: 1, justifyContent: "center" }} onClick={() => {
+              const newStatus = selected.status === "live" ? "paused" : "live";
+              updateCampaignInStore(selected.id, { status: newStatus });
+              setCampaigns(prev => prev.map(c => c.id === selected.id ? { ...c, status: newStatus } : c));
+              setSelected((prev: any) => ({ ...prev, status: newStatus }));
+            }}>{selected.status === "live" ? "⏸ Pause" : "▶ Activate"}</Btn>
+            <Btn variant="ghost" onClick={() => {
+              setNewCamp(selected);
+              setShowNew(true);
+              setSelected(null);
+            }}>✏️ Edit</Btn>
+            <Btn variant="danger" onClick={() => {
+              deleteCampaignFromStore(selected.id);
+              setCampaigns(prev => prev.filter(c => c.id !== selected.id));
+              setSelected(null);
+            }}>🗑️</Btn>
           </div>
         </Modal>
       )}
