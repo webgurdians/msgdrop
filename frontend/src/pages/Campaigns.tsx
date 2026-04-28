@@ -49,7 +49,8 @@ export default function Campaigns() {
   const handleGenerateTemplate = async () => {
     setIsGenerating(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/generate-ai-response`, {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      const res = await fetch(`${baseUrl}/api/generate-ai-response`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -58,6 +59,7 @@ export default function Campaigns() {
           userQuery: `Write a short, high-converting WhatsApp message template for a '${newCamp.type}' campaign. Include placeholder variables exactly like {name} and {link}. Keep it under 2 sentences and do not include any conversational filler.`
         })
       });
+      if (!res.ok) throw new Error("HTTP Error " + res.status);
       const data = await res.json();
       if (data.response) {
         setNewCamp(p => ({ ...p, template: data.response }));
@@ -65,7 +67,7 @@ export default function Campaigns() {
         alert("Failed to generate template.");
       }
     } catch (err) {
-      alert("Error generating template.");
+      alert("Error generating template. Ensure the backend is running and reachable.");
     } finally {
       setIsGenerating(false);
     }

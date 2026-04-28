@@ -29,24 +29,26 @@ export default function AIConfig() {
   };
 
   const handleGenerateTest = async () => {
-    if (!testQuery) return;
+    const queryToUse = testQuery.trim() || "Do you have any slots available today?";
     setIsGenerating(true);
     setAiResponse("");
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/generate-ai-response`, {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      const res = await fetch(`${baseUrl}/api/generate-ai-response`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           businessContext: businessContext || "We are a local business.",
           tone: tone,
-          userQuery: testQuery
+          userQuery: queryToUse
         })
       });
+      if (!res.ok) throw new Error("HTTP Error " + res.status);
       const data = await res.json();
       if (data.response) setAiResponse(data.response);
       else setAiResponse("⚠️ Failed to generate response.");
     } catch (err) {
-      setAiResponse("⚠️ Error connecting to AI server.");
+      setAiResponse("⚠️ Error connecting to AI server. Please check your backend.");
     } finally {
       setIsGenerating(false);
     }
