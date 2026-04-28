@@ -49,19 +49,23 @@ export default function Landing() {
         @media (max-width: 768px) {
           .mobile-col { flex-direction: column !important; }
           .hero-h1 { font-size: 36px !important; }
-          .md-flex, .hide-mobile { display: none !important; }
+          .md-flex { display: none !important; }
           .pricing-growth { transform: none !important; border: 2px solid #0BCC6A !important; box-shadow: none !important; }
           .cta-h2 { font-size: 32px !important; }
           .section { padding: 60px 16px !important; }
+          .nav-container { padding: 12px 16px !important; }
+          .btn-primary { padding: 8px 12px !important; font-size: 13px !important; }
+          .btn-nav { padding: 8px 8px !important; font-size: 13px !important; }
+          .logo-text { font-size: 18px !important; }
         }
       `}</style>
 
       {/* Navbar */}
       <nav style={{ position: "sticky", top: 0, background: "rgba(247, 247, 245, 0.9)", backdropFilter: "blur(12px)", zIndex: 100, borderBottom: `1px solid ${C.border}` }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="nav-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => window.scrollTo(0,0)}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: C.green, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>💬</div>
-            <div className="font-display" style={{ fontSize: 22, fontWeight: 800, color: C.ink }}>MsgDrop</div>
+            <div className="logo-text font-display" style={{ fontSize: 22, fontWeight: 800, color: C.ink }}>MsgDrop</div>
           </div>
           
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -69,8 +73,8 @@ export default function Landing() {
               <button className="btn-nav" onClick={() => scrollTo('how-it-works')}>How it works</button>
               <button className="btn-nav" onClick={() => scrollTo('pricing')}>Pricing</button>
             </div>
-            <button className="btn-nav hide-mobile" onClick={navToLogin} style={{ fontWeight: 600 }}>Sign In</button>
-            <button className="btn-primary" onClick={navToLogin}>Start Free Trial</button>
+            <button className="btn-nav" onClick={navToLogin} style={{ fontWeight: 600, whiteSpace: "nowrap" }}>Sign In</button>
+            <button className="btn-primary" onClick={navToLogin} style={{ whiteSpace: "nowrap" }}>Start Free Trial</button>
           </div>
         </div>
       </nav>
