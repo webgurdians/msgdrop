@@ -31,7 +31,7 @@ export default function Landing() {
   };
 
   return (
-    <div style={{ background: C.surface, color: C.ink, fontFamily: "'Inter', sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: C.surface, color: C.ink, fontFamily: "'Inter', sans-serif", minHeight: "100vh", overflowX: 'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
         h1, h2, h3, h4, .font-display { font-family: 'Syne', sans-serif; letter-spacing: -0.02em; }
@@ -48,8 +48,11 @@ export default function Landing() {
         .md-flex { display: flex; gap: 8px; }
         @media (max-width: 768px) {
           .mobile-col { flex-direction: column !important; }
-          .hero-h1 { font-size: 40px !important; }
-          .md-flex { display: none !important; }
+          .hero-h1 { font-size: 36px !important; }
+          .md-flex, .hide-mobile { display: none !important; }
+          .pricing-growth { transform: none !important; border: 2px solid #0BCC6A !important; box-shadow: none !important; }
+          .cta-h2 { font-size: 32px !important; }
+          .section { padding: 60px 16px !important; }
         }
       `}</style>
 
@@ -66,7 +69,7 @@ export default function Landing() {
               <button className="btn-nav" onClick={() => scrollTo('how-it-works')}>How it works</button>
               <button className="btn-nav" onClick={() => scrollTo('pricing')}>Pricing</button>
             </div>
-            <button className="btn-nav" onClick={navToLogin} style={{ fontWeight: 600 }}>Sign In</button>
+            <button className="btn-nav hide-mobile" onClick={navToLogin} style={{ fontWeight: 600 }}>Sign In</button>
             <button className="btn-primary" onClick={navToLogin}>Start Free Trial</button>
           </div>
         </div>
@@ -216,7 +219,7 @@ export default function Landing() {
             </div>
 
             {/* Growth */}
-            <div style={{ flex: 1.1, background: C.ink, color: C.white, border: `1px solid ${C.inkLight}`, borderRadius: 20, padding: 32, display: "flex", flexDirection: "column", transform: "scale(1.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
+            <div className="pricing-growth" style={{ flex: 1.1, background: C.ink, color: C.white, border: `1px solid ${C.inkLight}`, borderRadius: 20, padding: 32, display: "flex", flexDirection: "column", transform: "scale(1.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
               <div style={{ background: C.green, color: "white", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, padding: "4px 12px", borderRadius: 20, width: "fit-content", marginBottom: 16 }}>Most Popular</div>
               <h3 className="font-display" style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Growth</h3>
               <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginBottom: 24 }}>For growing Indian SMBs.</p>
@@ -289,7 +292,7 @@ export default function Landing() {
       {/* Final CTA */}
       <section style={{ background: C.ink, color: "white", padding: "100px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <h2 className="font-display" style={{ fontSize: 48, fontWeight: 800, marginBottom: 24, lineHeight: 1.1 }}>
+          <h2 className="cta-h2 font-display" style={{ fontSize: 48, fontWeight: 800, marginBottom: 24, lineHeight: 1.1 }}>
             Your customers are on WhatsApp. <br/>Are you?
           </h2>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,0.6)", marginBottom: 40 }}>Join 200+ Indian businesses using MsgDrop.</p>
