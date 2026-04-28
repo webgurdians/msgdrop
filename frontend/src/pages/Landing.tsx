@@ -52,9 +52,10 @@ export default function Landing() {
         @media (max-width: 768px) {
           .section { padding: 60px 16px; }
           .hero-grid { grid-template-columns: 1fr !important; gap: 40px; text-align: center; }
-          .hero-h1 { font-size: 40px !important; }
+          .hero-h1 { font-size: 36px !important; word-break: break-word; line-height: 1.2 !important; }
           .hero-btns { justify-content: center; }
           .stepper-arrow { display: none; }
+          .hide-mobile { display: none !important; }
         }
       `}</style>
 
