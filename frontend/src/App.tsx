@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics';
 
 function DemoSetup() {
   localStorage.setItem('demoMode', 'true');
+  localStorage.setItem('userEmail', 'admin@msgdrop.com'); // Triggers mock.ts to return full data
   return <Navigate to="/dashboard" replace />;
 }
 
