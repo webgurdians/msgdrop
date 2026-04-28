@@ -21,7 +21,6 @@ import passport from 'passport';
 import './lib/passport';
 app.use(passport.initialize());
 
-import authRoutes from './routes/auth';
 import aiRoutes from './routes/ai';
 
 // Routes
