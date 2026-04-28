@@ -50,7 +50,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: 'Validation Error', details: error.errors });
+      res.status(400).json({ error: 'Validation Error', details: (error as any).errors });
       return;
     }
     console.error(error);
@@ -106,7 +106,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: 'Validation Error', details: error.errors });
+      res.status(400).json({ error: 'Validation Error', details: (error as any).errors });
       return;
     }
     console.error(error);
