@@ -52,41 +52,43 @@ export default function Campaigns() {
     }
     const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
     
-    if ((newCamp as any).id) {
-      if (isDemo) {
-        setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
-      } else {
-        await fetch(`${baseUrl}/api/campaigns/${(newCamp as any).id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newCamp)
-        });
-        setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
-      }
-    } else {
-      const camp: any = {
-        ...newCamp, status: "live",
-        icon: ["💬", "🔔", "🔁", "🎉", "🎂"][Math.floor(Math.random() * 5)],
-        color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],
-        sent: 0, opened: 0, replied: 0, segment: "Custom segment",
-      };
-      if (isDemo) {
-        camp.id = campaigns.length + 1;
-        setCampaigns(prev => [camp, ...prev]);
-      } else {
-        const res = await fetch(`${baseUrl}/api/campaigns`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(camp)
-        });
-        const saved = await res.json();
-        if (!res.ok) {
-          throw new Error(saved.error || "Failed to save campaign");
+    try {
+      if ((newCamp as any).id) {
+        if (isDemo) {
+          setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
+        } else {
+          await fetch(`${baseUrl}/api/campaigns/${(newCamp as any).id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newCamp)
+          });
+          setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
         }
-        setCampaigns(prev => [saved, ...prev]);
+      } else {
+        const camp: any = {
+          ...newCamp, status: "live",
+          icon: ["💬", "🔔", "🔁", "🎉", "🎂"][Math.floor(Math.random() * 5)],
+          color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],
+          sent: 0, opened: 0, replied: 0, segment: "Custom segment",
+        };
+        if (isDemo) {
+          camp.id = campaigns.length + 1;
+          setCampaigns(prev => [camp, ...prev]);
+        } else {
+          const res = await fetch(`${baseUrl}/api/campaigns`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(camp)
+          });
+          const saved = await res.json();
+          if (!res.ok) {
+            throw new Error(saved.error || "Failed to save campaign");
+          }
+          setCampaigns(prev => [saved, ...prev]);
+        }
       }
     } catch (err: any) {
-      console.error("Failed to add campaign", err);
+      console.error("Failed to save campaign", err);
       alert(`Error saving campaign: ${err.message}. Did you run the schema.sql in Supabase?`);
     }
     setShowNew(false);
