@@ -22,10 +22,12 @@ import './lib/passport';
 app.use(passport.initialize());
 
 import aiRoutes from './routes/ai';
+import dbRoutes from './routes/db';
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api', aiRoutes);
+app.use('/api', dbRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

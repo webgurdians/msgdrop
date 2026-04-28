@@ -12,13 +12,42 @@ export default function AIConfig() {
   const [newA, setNewA] = useState("");
   
   const [businessContext, setBusinessContext] = useState("");
+  const [businessHours, setBusinessHours] = useState("");
   const [testQuery, setTestQuery] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+        const res = await fetch(`${baseUrl}/api/config`);
+        const data = await res.json();
+        if (data.businessContext) setBusinessContext(data.businessContext);
+        if (data.tone) setTone(data.tone);
+        if (data.businessHours) setBusinessHours(data.businessHours);
+        if (data.enabled !== undefined) setEnabled(data.enabled);
+      } catch (err) {
+        console.error("Failed to load config", err);
+      }
+    };
+    fetchConfig();
     setFaqs(AI_REPLIES);
   }, [AI_REPLIES.length]);
+
+  const saveConfig = async () => {
+    try {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      await fetch(`${baseUrl}/api/config`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessContext, tone, businessHours, enabled })
+      });
+      alert("Config saved successfully!");
+    } catch (err) {
+      alert("Failed to save config.");
+    }
+  };
 
   const addFaq = () => {
     if (!newQ || !newA) return;
@@ -91,9 +120,9 @@ export default function AIConfig() {
               <Input multiline value={businessContext} onChange={(e: any) => setBusinessContext(e.target.value)} placeholder="e.g. We are a premium salon in Park Street, Kolkata. We offer haircuts, facials, and more. Our prices start at ₹150." rows={3} />
             </Field>
             <Field label="Business Hours">
-              <Input placeholder="e.g. Mon-Sat 10AM-8PM, Sun 11AM-6PM" />
+              <Input value={businessHours} onChange={(e: any) => setBusinessHours(e.target.value)} placeholder="e.g. Mon-Sat 10AM-8PM, Sun 11AM-6PM" />
             </Field>
-            <Btn style={{ width: "100%", justifyContent: "center", marginTop: 4 }}>💾 Save Config</Btn>
+            <Btn style={{ width: "100%", justifyContent: "center", marginTop: 4 }} onClick={saveConfig}>💾 Save Config</Btn>
             
             <div style={{ marginTop: 24, borderTop: `1px solid ${G.border}`, paddingTop: 24 }}>
               <div style={{ fontWeight: 700, fontFamily: "Syne,sans-serif", fontSize: 14, marginBottom: 12 }}>🧪 Test Auto-Reply</div>

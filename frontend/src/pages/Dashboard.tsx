@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { G } from '../theme';
 import { Card, StatCard, Btn, Avatar, ProgressBar } from '../components/ui';
@@ -5,8 +6,42 @@ import { useCRMData } from '../data/mock';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { CAMPAIGNS, INBOX, stats } = useCRMData();
-  const recentCampaigns = CAMPAIGNS.filter(c => c.status === "live").slice(0, 3);
+  const { INBOX } = useCRMData();
+  
+  const [contacts, setContacts] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+        const [resContacts, resCampaigns] = await Promise.all([
+          fetch(`${baseUrl}/api/contacts`),
+          fetch(`${baseUrl}/api/campaigns`)
+        ]);
+        const contactsData = await resContacts.json();
+        const campaignsData = await resCampaigns.json();
+        
+        setContacts(Array.isArray(contactsData) ? contactsData : []);
+        setCampaigns(Array.isArray(campaignsData) ? campaignsData : []);
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const recentCampaigns = campaigns.filter(c => c.status === "live").slice(0, 3);
+  
+  const stats = {
+    totalContacts: contacts.length.toString(),
+    messagesSent: campaigns.reduce((acc, c) => acc + (c.sent || 0), 0).toLocaleString(),
+    campaignsLive: campaigns.filter(c => c.status === "live").length.toString(),
+    revenueRecovered: "₹" + campaigns.filter(c => c.type === 'Reactivation').reduce((acc, c) => acc + ((c.replied || 0) * 1500), 0).toLocaleString()
+  };
   
   return (
     <div className="fade-up">
@@ -24,7 +59,9 @@ export default function Dashboard() {
             <div style={{ fontWeight: 700, fontFamily: "Syne, sans-serif", fontSize: 14 }}>🚀 Active Campaigns</div>
             <Btn sm variant="ghost" onClick={() => navigate("/dashboard/campaigns")}>View all →</Btn>
           </div>
-          {recentCampaigns.length === 0 ? (
+          {isLoading ? (
+            <div style={{ padding: "20px 0", textAlign: "center", color: G.muted, fontSize: 13 }}>Loading database...</div>
+          ) : recentCampaigns.length === 0 ? (
             <div style={{ padding: "20px 0", textAlign: "center", color: G.muted, fontSize: 13 }}>No active campaigns</div>
           ) : recentCampaigns.map(c => (
             <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: `1px solid ${G.border}` }}>

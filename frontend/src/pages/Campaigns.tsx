@@ -2,19 +2,31 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { G } from '../theme';
 import { Btn, StatusDot, Modal, Field, Input } from '../components/ui';
-import { useCRMData, addCampaignToStore, deleteCampaignFromStore, updateCampaignInStore } from '../data/mock';
 
 export default function Campaigns() {
-  const { CAMPAIGNS } = useCRMData();
   const [selected, setSelected] = useState<any>(null);
   const [showNew, setShowNew] = useState(false);
   const [newCamp, setNewCamp] = useState({ name: "", type: "Follow-up", template: "", trigger: "" });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const [campaigns, setCampaigns] = useState(CAMPAIGNS);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
   const location = useLocation();
 
-  useEffect(() => { setCampaigns(CAMPAIGNS); }, [CAMPAIGNS.length]);
+  const fetchCampaigns = async () => {
+    try {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      const res = await fetch(`${baseUrl}/api/campaigns`);
+      const data = await res.json();
+      setCampaigns(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchCampaigns(); }, []);
 
   useEffect(() => {
     if (location.state?.openNew) {
@@ -24,23 +36,34 @@ export default function Campaigns() {
     }
   }, [location.state]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!newCamp.name) {
       alert("Please enter a campaign name.");
       return;
     }
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+    
     if ((newCamp as any).id) {
-      updateCampaignInStore((newCamp as any).id, newCamp);
+      await fetch(`${baseUrl}/api/campaigns/${(newCamp as any).id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCamp)
+      });
       setCampaigns(prev => prev.map(c => c.id === (newCamp as any).id ? { ...c, ...newCamp } : c));
     } else {
       const camp = {
-        ...newCamp, id: campaigns.length + 1, status: "live",
+        ...newCamp, status: "live",
         icon: ["💬", "🔔", "🔁", "🎉", "🎂"][Math.floor(Math.random() * 5)],
         color: [G.green, G.teal, G.amber, "#c084fc", "#fb923c"][Math.floor(Math.random() * 5)],
         sent: 0, opened: 0, replied: 0, segment: "Custom segment",
       };
-      setCampaigns(prev => [...prev, camp]);
-      addCampaignToStore(camp);
+      const res = await fetch(`${baseUrl}/api/campaigns`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(camp)
+      });
+      const saved = await res.json();
+      setCampaigns(prev => [saved, ...prev]);
     }
     setShowNew(false);
     setNewCamp({ name: "", type: "Follow-up", template: "", trigger: "" });
@@ -81,7 +104,9 @@ export default function Campaigns() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 12 }}>
-        {campaigns.length === 0 ? (
+        {isLoading ? (
+          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 40, color: G.muted }}>Loading database...</div>
+        ) : campaigns.length === 0 ? (
           <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 40, color: G.muted }}>No campaigns created yet. Click "New Campaign" to start.</div>
         ) : campaigns.map(c => (
           <div key={c.id} onClick={() => setSelected(c)} style={{
@@ -144,9 +169,14 @@ export default function Campaigns() {
             </div>
           )}
           <div style={{ display: "flex", gap: 8 }}>
-            <Btn style={{ flex: 1, justifyContent: "center" }} onClick={() => {
+            <Btn style={{ flex: 1, justifyContent: "center" }} onClick={async () => {
               const newStatus = selected.status === "live" ? "paused" : "live";
-              updateCampaignInStore(selected.id, { status: newStatus });
+              const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+              await fetch(`${baseUrl}/api/campaigns/${selected.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: newStatus })
+              });
               setCampaigns(prev => prev.map(c => c.id === selected.id ? { ...c, status: newStatus } : c));
               setSelected((prev: any) => ({ ...prev, status: newStatus }));
             }}>{selected.status === "live" ? "⏸ Pause" : "▶ Activate"}</Btn>
@@ -155,8 +185,9 @@ export default function Campaigns() {
               setShowNew(true);
               setSelected(null);
             }}>✏️ Edit</Btn>
-            <Btn variant="danger" onClick={() => {
-              deleteCampaignFromStore(selected.id);
+            <Btn variant="danger" onClick={async () => {
+              const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+              await fetch(`${baseUrl}/api/campaigns/${selected.id}`, { method: "DELETE" });
               setCampaigns(prev => prev.filter(c => c.id !== selected.id));
               setSelected(null);
             }}>🗑️</Btn>

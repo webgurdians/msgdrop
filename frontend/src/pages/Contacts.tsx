@@ -2,24 +2,32 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { G } from '../theme';
 import { Card, Btn, Avatar, Tag, Modal, Field, Input } from '../components/ui';
-import { useCRMData, addContactToStore, deleteContactFromStore } from '../data/mock';
 
 export default function Contacts() {
   const navigate = useNavigate();
-  const { CONTACTS } = useCRMData();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
-  
-  // Use CONTACTS directly to avoid sync issues, but keep local copy if we want optimistic updates without remounting
-  const [contacts, setContacts] = useState(CONTACTS);
+  const [contacts, setContacts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [form, setForm] = useState({ name: "", phone: "", type: "Salon", tag: "New" });
 
-  // Update local state ONLY when the length of the global CONTACTS changes
-  // This prevents infinite loops caused by new array references on every render
+  const fetchContacts = async () => {
+    try {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      const res = await fetch(`${baseUrl}/api/contacts`);
+      const data = await res.json();
+      setContacts(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setContacts(CONTACTS);
-  }, [CONTACTS.length]);
+    fetchContacts();
+  }, []);
 
   const filtered = contacts.filter(c => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.phone.includes(search);
@@ -27,22 +35,39 @@ export default function Contacts() {
     return matchSearch && matchFilter;
   });
 
-  const addContact = () => {
+  const addContact = async () => {
     if (!form.name || !form.phone) return;
     const newContact = {
-      ...form, id: contacts.length + 1, status: "new", lastVisit: "Today", visits: 0,
+      ...form, status: "new", lastVisit: "Today", visits: 0,
       avatar: form.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2),
       color: [G.green, G.teal, G.amber, "#a78bfa", "#fb923c"][Math.floor(Math.random() * 5)],
     };
     
-    // Update local state for immediate UI reflection
-    setContacts(prev => [...prev, newContact]);
-    
-    // Save it globally so it reflects in Dashboard
-    addContactToStore(newContact);
+    try {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      const res = await fetch(`${baseUrl}/api/contacts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newContact)
+      });
+      const saved = await res.json();
+      setContacts(prev => [saved, ...prev]);
+    } catch (err) {
+      console.error("Failed to add contact", err);
+    }
     
     setShowModal(false);
     setForm({ name: "", phone: "", type: "Salon", tag: "New" });
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+      await fetch(`${baseUrl}/api/contacts/${id}`, { method: "DELETE" });
+      setContacts(prev => prev.filter(x => x.id !== id));
+    } catch (err) {
+      console.error("Failed to delete", err);
+    }
   };
 
   return (
@@ -94,16 +119,18 @@ export default function Contacts() {
                   <div style={{ display: "flex", gap: 6 }}>
                     <Btn sm variant="teal" onClick={() => navigate("/dashboard/inbox", { state: { contactId: c.id } })}>💬 Message</Btn>
                     {c.status === "lapsed" && <Btn sm variant="ghost" onClick={() => navigate("/dashboard/campaigns")}>🔁 Win-Back</Btn>}
-                    <Btn sm variant="danger" onClick={() => { deleteContactFromStore(c.id); setContacts(prev => prev.filter(x => x.id !== c.id)); }}>🗑️</Btn>
+                    <Btn sm variant="danger" onClick={() => handleDelete(c.id)}>🗑️</Btn>
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {filtered.length === 0 && (
+        {isLoading ? (
+          <div style={{ textAlign: "center", padding: 40, color: G.muted }}>Loading database...</div>
+        ) : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: 40, color: G.muted }}>No contacts found</div>
-        )}
+        ) : null}
       </Card>
 
       {showModal && (
