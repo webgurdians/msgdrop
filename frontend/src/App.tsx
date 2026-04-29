@@ -8,6 +8,7 @@ import Campaigns from './pages/Campaigns';
 import Inbox from './pages/Inbox';
 import AIConfig from './pages/AIConfig';
 import Analytics from './pages/Analytics';
+import AnalyticsRouteTracker from './components/AnalyticsRouteTracker';
 
 function DemoSetup() {
   localStorage.setItem('demoMode', 'true');
@@ -18,6 +19,7 @@ function DemoSetup() {
 export default function App() {
   return (
     <Router>
+      <AnalyticsRouteTracker />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
